@@ -1,0 +1,14 @@
+
+{% extends 'service/base.html' %}
+{% load static tailwind_tags %}
+
+{% block content %}
+
+{% for e in equipements %}
+<p class="text-red-500">ID : {{ e.id }}</p>
+
+{% empty %}
+<p>vous n'avez pas d'equipements pour le moment</p>
+{% endfor %}
+
+{% endblock %}

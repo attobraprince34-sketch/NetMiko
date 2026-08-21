@@ -15,17 +15,17 @@
     <header class="w-full max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">         
         <a href="/" class="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-lg">             
             <!-- Logo agrandi et propre -->             
-            <p class="font-bold">Net<span class="bg-green-500 rounded-bl-4xl shadow text-white p-2">Miko</span> </p>         
+            <p class="font-bold">Net<span class="bg-green-500 rounded-bl-4xl shadow text-white p-2">Monitor</span> </p>         
         </a>         
         <nav class="flex items-center gap-8 text-base font-semibold text-slate-900">             
-            <a href="#" class="flex items-center gap-2 hover:text-emerald-600 transition-colors duration-200">                 
+            <a href="{% url 'login' %}" class="flex items-center gap-2 hover:text-emerald-600 transition-colors duration-200">                 
                 <!-- Icône Connexion (SVG) -->
                 <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-emerald-600">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
                 </svg>
                 Se connecter             
             </a>             
-            <a href="#" class="flex items-center gap-2 bg-green-500 text-white px-5 py-3 rounded-xl font-bold shadow-md hover:bg-emerald-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600">                 
+            <a href="{% url 'register' %}" class="flex items-center gap-2 bg-green-500 text-white px-5 py-3 rounded-xl font-bold shadow-md hover:bg-emerald-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600">                 
                 <!-- Icône Inscription / Activité (SVG) -->
                 <svg xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12h3.375a1.125 1.125 0 0 1 1.056.775l1.226 3.811a1.125 1.125 0 0 0 2.143-.042l2.678-8.567a1.125 1.125 0 0 1 2.143-.042l1.353 4.31a1.125 1.125 0 0 0 1.056.775H21.75" />
