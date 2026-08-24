@@ -1,14 +1,21 @@
-
 {% extends 'service/base.html' %}
-{% load static tailwind_tags %}
+
+
+{% block admin %} 
+{% for e in equipements %}  
+{{ e.owner  }} 
+{% endfor %}
+
+
+<!-- contenu de la page  -->
+{% endblock  %}
+
+
+
+
 
 {% block content %}
 
-{% for e in equipements %}
-<p class="text-red-500">ID : {{ e.id }}</p>
 
-{% empty %}
-<p>vous n'avez pas d'equipements pour le moment</p>
-{% endfor %}
 
 {% endblock %}
