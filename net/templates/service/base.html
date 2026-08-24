@@ -6,40 +6,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>{% block title %}NetMonitor{% endblock %}</title>
-
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
 
-<body class="bg-orange-50 w-full min-h-screen bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:16px_16px] flex flex-col justify-between font-sans">
+<body class="bg-orange-50 min-h-screen w-full bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:16px_16px] font-sans">
 
     <!-- ========================================================= -->
     <!-- MOBILE HEADER                                             -->
     <!-- ========================================================= -->
 
-    <header
-        class="lg:hidden fixed top-0 left-0 right-0 z-40 h-16 bg-orange-50 w-full min-h-screen bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:16px_16px]  flex-col justify-between font-sans  text-slate-900 border-b border-slate-200 flex items-center  px-4">
+    <header class="lg:hidden fixed top-0 left-0 right-0 z-40 h-16 bg-orange-50/95 backdrop-blur border-b border-slate-200 flex items-center px-4">
 
         <div class="flex items-center gap-3">
 
             <button
                 id="openSidebar"
                 type="button"
-                class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition"
+                class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 active:scale-95 transition"
                 aria-label="Ouvrir le menu">
 
-                <svg class="w-6 h-6 text-slate-700"
-                     fill="none"
-                     stroke="currentColor"
-                     viewBox="0 0 24 24">
-
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h16M4 18h16" />
-
+                <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
 
             </button>
@@ -57,10 +45,7 @@
     <!-- OVERLAY MOBILE                                            -->
     <!-- ========================================================= -->
 
-    <div
-        id="sidebarOverlay"
-        class="fixed inset-0 bg-slate-950/50 z-40 hidden lg:hidden">
-    </div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-950/50 z-40 hidden lg:hidden"></div>
 
 
     <!-- ========================================================= -->
@@ -69,89 +54,36 @@
 
     <aside
         id="sidebar"
-        class="
-            fixed
-            left-0
-            top-0
-            z-50
-            h-screen
-            w-72
-            bg-orange-50
-            border-r
-            border-slate-200
-            flex
-            flex-col
-            shadow-xl
-            lg:shadow-none
+        class="fixed left-0 top-0 z-50 h-screen w-72 max-w-[85vw] bg-orange-50 border-r border-slate-200 flex flex-col shadow-xl lg:shadow-none -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
 
-            -translate-x-full
-            lg:translate-x-0
+        <!-- LOGO -->
+        <div class="h-20 px-6 flex items-center justify-between border-b border-slate-100 shrink-0">
 
-            transition-transform
-            duration-300
-            ease-in-out
-        ">
+            <a href="/" class="flex items-center gap-3 group min-w-0">
 
-        <!-- ===================================================== -->
-        <!-- LOGO                                                   -->
-        <!-- ===================================================== -->
-
-        <div
-            class="h-20 px-6 flex items-center justify-between border-b border-slate-100">
-
-            <a
-                href="/"
-                class="flex items-center gap-3 group">
-
-                <!-- Logo réseau -->
-
-                <div
-                    class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center group-hover:bg-green-100 transition">
-
-                    <img
-                        src="{% static 'images/reseau.png' %}"
-                        alt="Logo réseau informatique"
-                        class="w-7 h-7 object-contain">
-
+                <div class="w-10 h-10 shrink-0 rounded-xl bg-green-50 flex items-center justify-center group-hover:bg-green-100 transition">
+                    <img src="{% static 'images/reseau.png' %}" alt="Logo réseau informatique" class="w-7 h-7 object-contain">
                 </div>
 
-                <!-- Nom -->
-
-                <div class="leading-tight">
-
-                    <p class="text-xl font-extrabold tracking-tight">
+                <div class="leading-tight min-w-0">
+                    <p class="text-xl font-extrabold tracking-tight truncate">
                         Net<span class="text-green-500">Monitor</span>
                     </p>
-
-                    <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+                    <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider truncate">
                         Network Monitoring
                     </p>
-
                 </div>
 
             </a>
 
-
-            <!-- Bouton fermeture mobile -->
-
             <button
                 id="closeSidebar"
                 type="button"
-                class="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 transition"
+                class="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 active:scale-95 transition shrink-0"
                 aria-label="Fermer le menu">
 
-                <svg
-                    class="w-5 h-5 text-slate-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M6 18L18 6M6 6l12 12" />
-
+                <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
 
             </button>
@@ -165,300 +97,145 @@
 
         <nav class="flex-1 overflow-y-auto px-4 py-6">
 
-            <!-- SECTION PRINCIPALE -->
-
             <p class="px-3 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                 Monitoring
             </p>
 
-
             <div class="space-y-1">
 
+                {% url 'dashboard' as dashboard_url %}
+                {% url 'device' as device_url %}
+                {% url 'interface' as interface_url %}
+                {% url 'alerte' as alerte_url %}
+                {% url 'incident' as incident_url %}
+                {% url 'rapport' as rapport_url %}
+                {% url 'user' as user_url %}
+                {% url 'admin' as admin_url %}
+
                 <!-- DASHBOARD -->
+                <a href="{{ dashboard_url }}"
+                   class="group flex items-center gap-3 px-3 py-3 rounded-xl font-semibold transition
+                          {% if request.path == dashboard_url %} bg-green-50 text-green-600
+                          {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
 
-                <a
-                    href="#"
-                    class="
-                        group
-                        flex
-                        items-center
-                        gap-3
-                        px-3
-                        py-3
-                        rounded-xl
-                        bg-green-50
-                        text-green-600
-                        font-semibold
-                        transition
-                    ">
-
-                    <div
-                        class="w-9 h-9 flex items-center justify-center rounded-lg bg-green-500 shadow-sm">
-
-                        <img
-                            src="{% static 'images/business.png' %}"
-                            class="w-5 h-5 object-contain"
-                            alt="">
-
+                    <div class="w-9 h-9 flex items-center justify-center rounded-lg shrink-0 transition
+                                {% if request.path == dashboard_url %} bg-green-500 shadow-sm
+                                {% else %} bg-slate-100 group-hover:bg-green-50 {% endif %}">
+                        <img src="{% static 'images/business.png' %}" class="w-5 h-5 object-contain" alt="">
                     </div>
-
-                    <span>Dashboard</span>
-
+                    <span class="truncate">Dashboard</span>
                 </a>
-
 
                 <!-- DEVICES -->
+                <a href="{{ device_url }}"
+                   class="group flex items-center gap-3 px-3 py-3 rounded-xl font-semibold transition
+                          {% if request.path == device_url %} bg-green-50 text-green-600
+                          {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
 
-                <a
-                    href="#"
-                    class="
-                        group
-                        flex
-                        items-center
-                        gap-3
-                        px-3
-                        py-3
-                        rounded-xl
-                        text-slate-600
-                        hover:bg-slate-50
-                        hover:text-green-600
-                        transition
-                    ">
-
-                    <div
-                        class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 group-hover:bg-green-50 transition">
-
-                        <img
-                            src="{% static 'images/device.png' %}"
-                            class="w-5 h-5 object-contain"
-                            alt="">
-
+                    <div class="w-9 h-9 flex items-center justify-center rounded-lg shrink-0 transition
+                                {% if request.path == device_url %} bg-green-500 shadow-sm
+                                {% else %} bg-slate-100 group-hover:bg-green-50 {% endif %}">
+                        <img src="{% static 'images/device.png' %}" class="w-5 h-5 object-contain" alt="">
                     </div>
-
-                    <span>Devices</span>
-
+                    <span class="truncate">Devices</span>
                 </a>
-
 
                 <!-- INTERFACES -->
+                <a href="{{ interface_url }}"
+                   class="group flex items-center gap-3 px-3 py-3 rounded-xl font-semibold transition
+                          {% if request.path == interface_url %} bg-green-50 text-green-600
+                          {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
 
-                <a
-                    href="#"
-                    class="
-                        group
-                        flex
-                        items-center
-                        gap-3
-                        px-3
-                        py-3
-                        rounded-xl
-                        text-slate-600
-                        hover:bg-slate-50
-                        hover:text-green-600
-                        transition
-                    ">
-
-                    <div
-                        class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 group-hover:bg-green-50 transition">
-
-                        <img
-                            src="{% static 'images/interface.png' %}"
-                            class="w-5 h-5 object-contain"
-                            alt="">
-
+                    <div class="w-9 h-9 flex items-center justify-center rounded-lg shrink-0 transition
+                                {% if request.path == interface_url %} bg-green-500 shadow-sm
+                                {% else %} bg-slate-100 group-hover:bg-green-50 {% endif %}">
+                        <img src="{% static 'images/interface.png' %}" class="w-5 h-5 object-contain" alt="">
                     </div>
-
-                    <span>Interfaces</span>
-
+                    <span class="truncate">Interfaces</span>
                 </a>
-
 
                 <!-- ALERTES -->
+                <a href="{{ alerte_url }}"
+                   class="group flex items-center justify-between px-3 py-3 rounded-xl font-semibold transition
+                          {% if request.path == alerte_url %} bg-green-50 text-green-600
+                          {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
 
-                <a
-                    href="#"
-                    class="
-                        group
-                        flex
-                        items-center
-                        justify-between
-                        px-3
-                        py-3
-                        rounded-xl
-                        text-slate-600
-                        hover:bg-slate-50
-                        hover:text-green-600
-                        transition
-                    ">
-
-                    <div class="flex items-center gap-3">
-
-                        <div
-                            class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 group-hover:bg-green-50 transition">
-
-                            <img
-                                src="{% static 'images/alerte.png' %}"
-                                class="w-5 h-5 object-contain"
-                                alt="">
-
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 flex items-center justify-center rounded-lg shrink-0 transition
+                                    {% if request.path == alerte_url %} bg-green-500 shadow-sm
+                                    {% else %} bg-slate-100 group-hover:bg-green-50 {% endif %}">
+                            <img src="{% static 'images/alerte.png' %}" class="w-5 h-5 object-contain" alt="">
                         </div>
-
-                        <span>Alertes</span>
-
+                        <span class="truncate">Alertes</span>
                     </div>
-
-
-                    <!-- Badge -->
-
-                   
-
                 </a>
-
 
                 <!-- INCIDENTS -->
+                <a href="{{ incident_url }}"
+                   class="group flex items-center gap-3 px-3 py-3 rounded-xl font-semibold transition
+                          {% if request.path == incident_url %} bg-green-50 text-green-600
+                          {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
 
-                <a
-                    href="#"
-                    class="
-                        group
-                        flex
-                        items-center
-                        gap-3
-                        px-3
-                        py-3
-                        rounded-xl
-                        text-slate-600
-                        hover:bg-slate-50
-                        hover:text-green-600
-                        transition
-                    ">
-
-                    <div
-                        class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 group-hover:bg-green-50 transition">
-
-                        <img
-                            src="{% static 'images/incident.png' %}"
-                            class="w-5 h-5 object-contain"
-                            alt="">
-
+                    <div class="w-9 h-9 flex items-center justify-center rounded-lg shrink-0 transition
+                                {% if request.path == incident_url %} bg-green-500 shadow-sm
+                                {% else %} bg-slate-100 group-hover:bg-green-50 {% endif %}">
+                        <img src="{% static 'images/incident.png' %}" class="w-5 h-5 object-contain" alt="">
                     </div>
-
-                    <span>Incidents</span>
-
+                    <span class="truncate">Incidents</span>
                 </a>
 
-
                 <!-- RAPPORTS -->
+                <a href="{{ rapport_url }}"
+                   class="group flex items-center gap-3 px-3 py-3 rounded-xl font-semibold transition
+                          {% if request.path == rapport_url %} bg-green-50 text-green-600
+                          {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
 
-                <a
-                    href="#"
-                    class="
-                        group
-                        flex
-                        items-center
-                        gap-3
-                        px-3
-                        py-3
-                        rounded-xl
-                        text-slate-600
-                        hover:bg-slate-50
-                        hover:text-green-600
-                        transition
-                    ">
-
-                    <div
-                        class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 group-hover:bg-green-50 transition">
-
-                        <img
-                            src="{% static 'images/rapport.png' %}"
-                            class="w-5 h-5 object-contain"
-                            alt="">
-
+                    <div class="w-9 h-9 flex items-center justify-center rounded-lg shrink-0 transition
+                                {% if request.path == rapport_url %} bg-green-500 shadow-sm
+                                {% else %} bg-slate-100 group-hover:bg-green-50 {% endif %}">
+                        <img src="{% static 'images/rapport.png' %}" class="w-5 h-5 object-contain" alt="">
                     </div>
-
-                    <span>Rapports</span>
-
+                    <span class="truncate">Rapports</span>
                 </a>
 
             </div>
 
 
-            <!-- ================================================= -->
-            <!-- ADMINISTRATION                                    -->
-            <!-- ================================================= -->
-
+            <!-- ADMINISTRATION -->
             <div class="mt-8">
 
                 <p class="px-3 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                     Administration
                 </p>
 
-
                 <div class="space-y-1">
 
                     <!-- USER -->
+                    <a href="{{ user_url }}"
+                       class="group flex items-center gap-3 px-3 py-3 rounded-xl font-semibold transition
+                              {% if request.path == user_url %} bg-green-50 text-green-600
+                              {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
 
-                    <a
-                        href="#"
-                        class="
-                            group
-                            flex
-                            items-center
-                            gap-3
-                            px-3
-                            py-3
-                            rounded-xl
-                            text-slate-600
-                            hover:bg-slate-50
-                            hover:text-green-600
-                            transition
-                        ">
-
-                        <div
-                            class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 group-hover:bg-green-50 transition">
-
-                            <img
-                                src="{% static 'images/user.png' %}"
-                                class="w-5 h-5 object-contain"
-                                alt="">
-
+                        <div class="w-9 h-9 flex items-center justify-center rounded-lg shrink-0 transition
+                                    {% if request.path == user_url %} bg-green-500 shadow-sm
+                                    {% else %} bg-slate-100 group-hover:bg-green-50 {% endif %}">
+                            <img src="{% static 'images/user.png' %}" class="w-5 h-5 object-contain" alt="">
                         </div>
-
-                        <span>Utilisateurs</span>
-
+                        <span class="truncate">Utilisateurs</span>
                     </a>
 
-
                     <!-- ADMIN -->
+                    <a href="{{ admin_url }}"
+                       class="group flex items-center gap-3 px-3 py-3 rounded-xl font-semibold transition
+                              {% if request.path == admin_url %} bg-green-50 text-green-600
+                              {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
 
-                    <a
-                        href="#"
-                        class="
-                            group
-                            flex
-                            items-center
-                            gap-3
-                            px-3
-                            py-3
-                            rounded-xl
-                            text-slate-600
-                            hover:bg-slate-50
-                            hover:text-green-600
-                            transition
-                        ">
-
-                        <div
-                            class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 group-hover:bg-green-50 transition">
-
-                            <img
-                                src="{% static 'images/admin.png' %}"
-                                class="w-5 h-5 object-contain"
-                                alt="">
-
+                        <div class="w-9 h-9 flex items-center justify-center rounded-lg shrink-0 transition
+                                    {% if request.path == admin_url %} bg-green-500 shadow-sm
+                                    {% else %} bg-slate-100 group-hover:bg-green-50 {% endif %}">
+                            <img src="{% static 'images/admin.png' %}" class="w-5 h-5 object-contain" alt="">
                         </div>
-
-                        <span>Administration</span>
-
+                        <span class="truncate">Administration</span>
                     </a>
 
                 </div>
@@ -468,80 +245,23 @@
         </nav>
 
 
-        <!-- ===================================================== -->
-        <!-- FOOTER SIDEBAR                                        -->
-        <!-- ===================================================== -->
+        <!-- FOOTER SIDEBAR -->
+        <div class="p-4 border-t border-slate-100 shrink-0">
 
-        <div class="p-4 border-t border-slate-100">
-
-            <!-- STATUS -->
-
-            <div
-                class="mb-3 px-3 py-2.5 rounded-xl bg-green-50 border border-green-100">
-
+            <div class="mb-3 px-3 py-2.5 rounded-xl bg-green-50 border border-green-100">
                 <div class="flex items-center gap-2">
-
-                    <span
-                        class="relative flex w-2.5 h-2.5">
-
-                        <span
-                            class="absolute inline-flex w-full h-full rounded-full bg-green-400 opacity-75 animate-ping">
-                        </span>
-
-                        <span
-                            class="relative inline-flex w-2.5 h-2.5 rounded-full bg-green-500">
-                        </span>
-
+                    <span class="relative flex w-2.5 h-2.5">
+                        <span class="absolute inline-flex w-full h-full rounded-full bg-green-400 opacity-75 animate-ping"></span>
+                        <span class="relative inline-flex w-2.5 h-2.5 rounded-full bg-green-500"></span>
                     </span>
-
-                    <span class="text-xs font-semibold text-green-700">
-                        Monitoring actif
-                    </span>
-
+                    <span class="text-xs font-semibold text-green-700">Monitoring actif</span>
                 </div>
-
             </div>
 
-
-            <!-- USER PROFILE -->
-
-            <div
-                class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
-
-                <div
-                    class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold">
-
-                    U
-
-                </div>
-
-                <div class="flex-1 min-w-0">
-
-                    <p class="text-sm font-bold truncate">
-                        Utilisateur
-                    </p>
-
-                    <p class="text-xs text-slate-400 truncate">
-                        {% block admin %} {% endblock admin %}
-                    </p>
-
-                </div>
-
-                <svg
-                    class="w-4 h-4 text-slate-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 5l7 7-7 7" />
-
-                </svg>
-
-            </div>
+            <a href="{% url 'logout' %}" class="flex gap-2 p-2 justify-center items-center mx-auto min-w-auto hover:bg-red-400 hover:text-white rounded ">
+                <img src="{% static 'images/logout.png' %}" width="20" height="20" alt="">
+                <p class="font-semibold ">Logout</p>
+            </a>
 
         </div>
 
@@ -552,19 +272,9 @@
     <!-- CONTENU PRINCIPAL                                         -->
     <!-- ========================================================= -->
 
-    <main
-        class="
-            min-h-screen
-            lg:ml-72
-            pt-16
-            lg:pt-0
-            transition-all
-            duration-300
-        ">
-
+    <main class="min-h-screen lg:ml-72 pt-16 lg:pt-0 transition-all duration-300">
         {% block content %}
         {% endblock %}
-
     </main>
 
 
@@ -573,75 +283,42 @@
     <!-- ========================================================= -->
 
     <script>
-
         const sidebar = document.getElementById("sidebar");
         const overlay = document.getElementById("sidebarOverlay");
-
         const openSidebar = document.getElementById("openSidebar");
         const closeSidebar = document.getElementById("closeSidebar");
 
-
         function openMenu() {
-
             sidebar.classList.remove("-translate-x-full");
             overlay.classList.remove("hidden");
-
             document.body.classList.add("overflow-hidden");
         }
 
-
         function closeMenu() {
-
             sidebar.classList.add("-translate-x-full");
             overlay.classList.add("hidden");
-
             document.body.classList.remove("overflow-hidden");
         }
 
-
         openSidebar.addEventListener("click", openMenu);
-
         closeSidebar.addEventListener("click", closeMenu);
-
         overlay.addEventListener("click", closeMenu);
 
-
-        /*
-         * Ferme automatiquement la sidebar
-         * lorsqu'on clique sur un lien sur mobile.
-         */
-
         const sidebarLinks = sidebar.querySelectorAll("a");
-
         sidebarLinks.forEach(link => {
-
             link.addEventListener("click", () => {
-
                 if (window.innerWidth < 1024) {
                     closeMenu();
                 }
-
             });
-
         });
-
-
-        /*
-         * Si on redimensionne la fenêtre vers desktop,
-         * on remet l'état normal.
-         */
 
         window.addEventListener("resize", () => {
-
             if (window.innerWidth >= 1024) {
-
                 overlay.classList.add("hidden");
                 document.body.classList.remove("overflow-hidden");
-
             }
-
         });
-
     </script>
 
 </body>

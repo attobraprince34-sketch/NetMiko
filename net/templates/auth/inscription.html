@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte — NetMonitor</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+
+<body class="min-h-screen w-full bg-orange-50 bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:16px_16px] font-sans flex items-center justify-center px-4 py-10">
+
+    <div class="w-full max-w-md">
+
+        <!-- CARTE -->
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8">
+
+            <!-- LOGO (centré, en tête de carte) -->
+            <div class="flex flex-col items-center text-center mb-6">
+
+                <div class="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center mb-3 shadow-sm">
+                    <img src="{% static 'images/reseau.png' %}" alt="Logo réseau informatique" class="w-9 h-9 object-contain">
+                </div>
+
+                <p class="text-2xl font-extrabold tracking-tight text-slate-900">
+                    Net<span class="text-green-500">Monitor</span>
+                </p>
+
+                <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider mt-1">
+                    Network Monitoring
+                </p>
+
+            </div>
+
+            <div class="border-t border-slate-100 mb-6"></div>
+
+            <h1 class="text-xl font-bold text-slate-900 mb-1 text-center">
+                Créer un compte
+            </h1>
+
+            <p class="text-sm text-slate-400 mb-6 text-center">
+                Rejoins NetMonitor pour superviser ton réseau
+            </p>
+
+
+            <!-- MESSAGES -->
+            {% if messages %}
+                <div class="mb-5 space-y-2">
+                    {% for message in messages %}
+                        <div class="px-4 py-3 rounded-xl text-sm font-medium
+                            {% if message.tags == 'success' %} bg-green-50 text-green-700 border border-green-100
+                            {% elif message.tags == 'error' %} bg-red-50 text-red-600 border border-red-100
+                            {% else %} bg-slate-50 text-slate-600 border border-slate-100 {% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+
+            <!-- FORMULAIRE -->
+            <form method="post" novalidate class="space-y-5">
+                {% csrf_token %}
+
+                <!-- NOM / PRENOM -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                            Prénom
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <p class="mt-1.5 text-xs text-red-500">{{ form.first_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                            Nom
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <p class="mt-1.5 text-xs text-red-500">{{ form.last_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <!-- USERNAME -->
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                        Nom d'utilisateur
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <p class="mt-1.5 text-xs text-red-500">{{ form.username.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- EMAIL -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                        Adresse e-mail
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <p class="mt-1.5 text-xs text-red-500">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- PASSWORD 1 -->
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                        Mot de passe
+                    </label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                        <p class="mt-1.5 text-xs text-red-500">{{ form.password1.errors.0 }}</p>
+                    {% endif %}
+                    <ul class="mt-1.5 text-xs text-red-300 list-disc list-inside space-y-0.5">
+                        <li>8 caractères minimum</li>
+                        <li>Ne doit pas être trop commun</li>
+                    </ul>
+                </div>
+
+                <!-- PASSWORD 2 -->
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                        Confirmation du mot de passe
+                    </label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <p class="mt-1.5 text-xs text-red-500">{{ form.password2.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- SUBMIT -->
+                <button
+                    type="submit"
+                    class="w-full py-3 rounded-xl bg-green-500 hover:bg-green-600 active:scale-[0.98] text-white font-semibold shadow-sm transition">
+                    Créer mon compte
+                </button>
+
+            </form>
+
+            <!-- LIEN CONNEXION -->
+            <p class="text-sm text-slate-500 text-center mt-6">
+                Déjà un compte ?
+                <a href="{% url 'connection' %}" class="text-green-600 font-semibold hover:underline">
+                    Se connecter
+                </a>
+            </p>
+
+        </div>
+
+        <p class="text-xs text-slate-400 text-center mt-6">
+            &copy; {% now "Y" %} NetMonitor. Tous droits réservés.
+        </p>
+
+    </div>
+
+</body>
+</html>
