@@ -61,9 +61,6 @@ NetMonitor est une application web orientée réseau et infrastructure IT. Elle 
 
 ![Administration](static/images/interface_admin.png)
 
-### Interface principale
-
-![Interface principale](static/images/interface.png)
 
 ## Stack technique
 
@@ -256,4 +253,4 @@ Projet développé par Attobra Prince.
 
 ## Remerciements
 
-Merci à toutes les personnes qui ont contribué à la conception et au développement de cette solution de supervision réseau.
+Merci à moi.
