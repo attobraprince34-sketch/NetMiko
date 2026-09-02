@@ -1,0 +1,162 @@
+{% extends 'service/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+
+    <a href="{% if equipement %}{% url 'detail_equipement' equipement.id %}{% else %}{% url 'incident' %}{% endif %}"
+       class="text-sm text-gray-400 hover:text-gray-600 hover:underline mb-4 inline-block">
+        &larr; {% if equipement %}Retour à {{ equipement.name }}{% else %}Retour à la liste{% endif %}
+    </a>
+
+    <h1 class="text-xl font-semibold text-gray-800 mb-6">
+        {% if equipement %}Modifier {{ equipement.name }}{% else %}Ajouter un équipement{% endif %}
+    </h1>
+
+    <form method="post" novalidate class="space-y-6">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Section : Informations générales -->
+        <div class="bg-white rounded-xl shadow p-5">
+            <h2 class="text-sm font-medium text-gray-600 mb-4 pb-2 border-b border-gray-100">
+                Informations générales
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.name.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Nom</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<p class="text-xs text-red-500 mt-1">{{ form.name.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.type.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Type</label>
+                    {{ form.type }}
+                    {% if form.type.errors %}<p class="text-xs text-red-500 mt-1">{{ form.type.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.fabriquant.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Fabriquant</label>
+                    {{ form.fabriquant }}
+                    {% if form.fabriquant.errors %}<p class="text-xs text-red-500 mt-1">{{ form.fabriquant.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.modele.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Modèle</label>
+                    {{ form.modele }}
+                    {% if form.modele.errors %}<p class="text-xs text-red-500 mt-1">{{ form.modele.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.localisation.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Localisation</label>
+                    {{ form.localisation }}
+                    {% if form.localisation.errors %}<p class="text-xs text-red-500 mt-1">{{ form.localisation.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.image.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Image (URL)</label>
+                    {{ form.image }}
+                    {% if form.image.errors %}<p class="text-xs text-red-500 mt-1">{{ form.image.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section : Réseau -->
+        <div class="bg-white rounded-xl shadow p-5">
+            <h2 class="text-sm font-medium text-gray-600 mb-4 pb-2 border-b border-gray-100">
+                Réseau
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.ip.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Adresse IP</label>
+                    {{ form.ip }}
+                    {% if form.ip.errors %}<p class="text-xs text-red-500 mt-1">{{ form.ip.errors.0 }}</p>{% endif %}
+                </div>
+                <div class="flex items-end pb-2">
+                    <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+                        {{ form.statut }}
+                        Équipement actif
+                    </label>
+                </div>
+                <div>
+                    <label for="{{ form.snmp.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Community SNMP</label>
+                    {{ form.snmp }}
+                    {% if form.snmp.errors %}<p class="text-xs text-red-500 mt-1">{{ form.snmp.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.snmp_port.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Port SNMP</label>
+                    {{ form.snmp_port }}
+                    {% if form.snmp_port.errors %}<p class="text-xs text-red-500 mt-1">{{ form.snmp_port.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.snmp_version.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Version SNMP</label>
+                    {{ form.snmp_version }}
+                    {% if form.snmp_version.errors %}<p class="text-xs text-red-500 mt-1">{{ form.snmp_version.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section : Métriques -->
+        <div class="bg-white rounded-xl shadow p-5">
+            <h2 class="text-sm font-medium text-gray-600 mb-4 pb-2 border-b border-gray-100">
+                Métriques
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="{{ form.cpu.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">CPU (%)</label>
+                    {{ form.cpu }}
+                    {% if form.cpu.errors %}<p class="text-xs text-red-500 mt-1">{{ form.cpu.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.memoire.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Mémoire (%)</label>
+                    {{ form.memoire }}
+                    {% if form.memoire.errors %}<p class="text-xs text-red-500 mt-1">{{ form.memoire.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.temperature.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Température (°C)</label>
+                    {{ form.temperature }}
+                    {% if form.temperature.errors %}<p class="text-xs text-red-500 mt-1">{{ form.temperature.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.latence.id_for_label }}" class="block text-xs font-medium text-gray-500 mb-1">Latence (ms)</label>
+                    {{ form.latence }}
+                    {% if form.latence.errors %}<p class="text-xs text-red-500 mt-1">{{ form.latence.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <!-- Uptime sur toute la largeur -->
+            <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Uptime</label>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        {{ form.uptime_jours }}
+                        {% if form.uptime_jours.errors %}<p class="text-xs text-red-500 mt-1">{{ form.uptime_jours.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        {{ form.uptime_heures }}
+                        {% if form.uptime_heures.errors %}<p class="text-xs text-red-500 mt-1">{{ form.uptime_heures.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        {{ form.uptime_minutes }}
+                        {% if form.uptime_minutes.errors %}<p class="text-xs text-red-500 mt-1">{{ form.uptime_minutes.errors.0 }}</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3">
+            <a href="{% if equipement %}{% url 'detail_equipement' equipement.id %}{% else %}{% url 'incident' %}{% endif %}"
+               class="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 text-sm bg-gray-50 transition-colors">
+                Annuler
+            </a>
+            <button type="submit"
+                    class="px-4 py-2 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-700 transition-colors">
+                {% if equipement %}Enregistrer les modifications{% else %}Ajouter l'équipement{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

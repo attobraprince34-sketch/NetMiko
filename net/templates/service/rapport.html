@@ -1,5 +1,184 @@
 {% extends 'service/base.html' %}
+{% load static %}
 
 {% block content %}
-<p>rapport</p>
+<script src="{% static 'js/chart.umd.js' %}"></script>
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <h1 class="text-xl font-semibold text-gray-800 mb-6">Rapport du parc d'équipements</h1>
+
+    <!-- Cartes de stats -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Total</p>
+            <p class="text-2xl font-semibold text-gray-800">{{ total }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Actifs</p>
+            <p class="text-2xl font-semibold text-green-600">{{ actifs }} <span class="text-sm text-gray-400">({{ pourcentage_actifs }}%)</span></p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Inactifs</p>
+            <p class="text-2xl font-semibold text-gray-500">{{ inactifs }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Sans SNMP</p>
+            <p class="text-2xl font-semibold text-red-500">{{ sans_snmp }}</p>
+        </div>
+    </div>
+
+    <!-- Moyennes du parc -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">CPU moyen</p>
+            <p class="text-xl font-semibold text-gray-800">{{ moyennes.cpu_moyen|floatformat:1|default:"—" }}%</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Mémoire moyenne</p>
+            <p class="text-xl font-semibold text-gray-800">{{ moyennes.memoire_moyenne|floatformat:1|default:"—" }}%</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Température moyenne</p>
+            <p class="text-xl font-semibold text-gray-800">{{ moyennes.temperature_moyenne|floatformat:1|default:"—" }}°C</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Latence moyenne</p>
+            <p class="text-xl font-semibold text-gray-800">{{ moyennes.latence_moyenne|floatformat:1|default:"—" }} ms</p>
+        </div>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow p-4">
+            <h2 class="text-sm font-medium text-gray-600 mb-3">Statut des équipements</h2>
+            <canvas id="statutChart" class="max-h-64"></canvas>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <h2 class="text-sm font-medium text-gray-600 mb-3">Répartition par type</h2>
+            <canvas id="typeChart" class="max-h-64"></canvas>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4 lg:col-span-2">
+            <h2 class="text-sm font-medium text-gray-600 mb-3">Répartition par localisation</h2>
+            <canvas id="localisationChart" class="max-h-72"></canvas>
+        </div>
+    </div>
+
+    <!-- Équipements inactifs -->
+    <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
+        <div class="px-4 py-3 border-b border-gray-100">
+            <h2 class="text-sm font-medium text-gray-600">Équipements inactifs récents</h2>
+        </div>
+        {% if inactifs_liste %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 text-gray-500 uppercase text-xs tracking-wide">
+                    <tr>
+                        <th class="px-4 py-2">Nom</th>
+                        <th class="px-4 py-2">IP</th>
+                        <th class="px-4 py-2">Localisation</th>
+                        <th class="px-4 py-2">Ajouté le</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for e in inactifs_liste %}
+                    <tr>
+                        <td class="px-4 py-2 font-medium text-gray-800">{{ e.name }}</td>
+                        <td class="px-4 py-2 font-mono text-xs">{{ e.ip }}</td>
+                        <td class="px-4 py-2 text-gray-600">{{ e.localisation }}</td>
+                        <td class="px-4 py-2 text-gray-400">{{ e.created_at|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="px-4 py-6 text-center text-gray-400">Aucun équipement inactif.</p>
+        {% endif %}
+    </div>
+
+    <!-- Ajouts récents -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-100">
+            <h2 class="text-sm font-medium text-gray-600">Derniers équipements ajoutés</h2>
+        </div>
+        {% if recents %}
+        <ul class="divide-y divide-gray-100">
+            {% for e in recents %}
+            <li class="px-4 py-3 flex items-center justify-between text-sm">
+                <span class="font-medium text-gray-800">{{ e.name }}</span>
+                <span class="text-gray-400 text-xs">{{ e.created_at|date:"d/m/Y H:i" }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="px-4 py-6 text-center text-gray-400">Aucun équipement enregistré.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Données JSON pour Chart.js (méthode sécurisée, pas d'injection JS brute) -->
+{{ chart_statut|json_script:"chart-statut-data" }}
+{{ chart_type|json_script:"chart-type-data" }}
+{{ chart_localisation|json_script:"chart-localisation-data" }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const statutData = JSON.parse(document.getElementById('chart-statut-data').textContent);
+    const typeData = JSON.parse(document.getElementById('chart-type-data').textContent);
+    const localisationData = JSON.parse(document.getElementById('chart-localisation-data').textContent);
+
+    new Chart(document.getElementById('statutChart'), {
+        type: 'doughnut',
+        data: {
+            labels: statutData.labels,
+            datasets: [{
+                data: statutData.data,
+                backgroundColor: ['#22c55e', '#9ca3af'],
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
+
+    new Chart(document.getElementById('typeChart'), {
+        type: 'bar',
+        data: {
+            labels: typeData.labels,
+            datasets: [{
+                label: "Nombre d'équipements",
+                data: typeData.data,
+                backgroundColor: '#4ade80',
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+    });
+
+    new Chart(document.getElementById('localisationChart'), {
+        type: 'bar',
+        data: {
+            labels: localisationData.labels,
+            datasets: [{
+                label: "Nombre d'équipements",
+                data: localisationData.data,
+                backgroundColor: '#60a5fa',
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+    });
+});
+</script>
 {% endblock %}

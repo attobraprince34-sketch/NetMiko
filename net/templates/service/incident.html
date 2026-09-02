@@ -1,7 +1,69 @@
 {% extends 'service/base.html' %}
+{% load static %}
 
 {% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
 
-<p>incident</p>
+    <div class="flex items-center gap-2 mb-6">
+        <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+        <h1 class="text-xl font-semibold text-gray-800">Incidents</h1>
+    </div>
 
+    <!-- Cartes de résumé -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <a href="?" class="bg-white rounded-xl shadow p-4 hover:ring-2 hover:ring-gray-200 transition {% if not filtre_gravite %}ring-2 ring-gray-400{% endif %}">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Total</p>
+            <p class="text-2xl font-semibold text-gray-800">{{ nb_total }}</p>
+        </a>
+        <a href="?gravite=critique" class="bg-white rounded-xl shadow p-4 hover:ring-2 hover:ring-red-200 transition {% if filtre_gravite == 'critique' %}ring-2 ring-red-400{% endif %}">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Critiques</p>
+            <p class="text-2xl font-semibold text-red-600">{{ nb_critiques }}</p>
+        </a>
+        <a href="?gravite=avertissement" class="bg-white rounded-xl shadow p-4 hover:ring-2 hover:ring-yellow-200 transition {% if filtre_gravite == 'avertissement' %}ring-2 ring-yellow-400{% endif %}">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Avertissements</p>
+            <p class="text-2xl font-semibold text-yellow-600">{{ nb_avertissements }}</p>
+        </a>
+    </div>
+
+    <!-- Liste des incidents -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        {% if incidents %}
+        <ul class="divide-y divide-gray-100">
+            {% for i in incidents %}
+            <li class="px-4 py-4 flex items-start gap-4">
+                <span class="mt-1 w-2.5 h-2.5 rounded-full shrink-0 {% if i.gravite == 'critique' %}bg-red-500{% else %}bg-yellow-400{% endif %}"></span>
+
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between gap-2 mb-1">
+                        <p class="font-medium text-gray-800">
+                            {{ i.type }}, {{ i.equipement.name }}
+                        </p>
+                        <span class="text-xs px-2 py-1 rounded-full font-medium
+                            {% if i.gravite == 'critique' %}bg-red-100 text-red-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                            {{ i.gravite|title }}
+                        </span>
+                    </div>
+                    <p class="text-sm text-gray-500">{{ i.detail }}</p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        {{ i.equipement.localisation }} · {{ i.equipement.ip }} · {{ i.equipement.type }}
+                    </p>
+                </div>
+
+                <a href="{% url 'detail_equipement' i.equipement.id %}" class="text-xs text-blue-500 hover:text-blue-700 hover:underline shrink-0 mt-1">
+                    Voir l'équipement
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="p-10 text-center text-gray-400">
+            {% if filtre_gravite %}
+                Aucun incident de type "{{ filtre_gravite }}".
+            {% else %}
+                Aucun incident détecté — tout va bien.
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

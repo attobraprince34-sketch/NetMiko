@@ -1,16 +1,294 @@
 {% extends 'service/base.html' %}
-
-
-
-<!-- contenu de la page  -->
-
-
-
-
-
+{% load static %}
 
 {% block content %}
+<script src="{% static 'js/chart.umd.js' %}"></script>
 
 
+<!-- première dive de visualisation des devices -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 items-stretch">
+    <div class="flex items-center gap-3 p-4 rounded-xl bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
+        <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-orange-100 shrink-0">
+            <img src="{% static 'images/appareils.png' %}" class="w-6 h-6 object-contain" alt="Appareils">
+        </div>
+        <div class="flex-1 flex flex-col justify-between">
+            <p class="text-sm text-gray-500">Nombre d'appareils</p>
+            <p class="text-2xl font-semibold text-gray-800">{{ nbr_appareils }}</p>
+            <a href="{% url 'voir' %}" class="text-sm text-orange-500 hover:text-orange-600 hover:underline">Voir</a>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-3 p-4 rounded-xl bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
+        <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-green-100 shrink-0">
+            <img src="{% static 'images/actifs.png' %}" class="w-6 h-6 object-contain" alt="Appareils actifs">
+        </div>
+        <div class="flex-1 flex flex-col justify-between">
+            <p class="text-sm text-gray-500">Appareils actifs</p>
+            <p class="text-2xl font-semibold text-gray-800">{{ equipement_actif }}</p>
+            <a href="{% url 'appareils_actifs' %}" class="text-sm text-green-600 hover:text-green-700 hover:underline">Voir</a>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-3 p-4 rounded-xl bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
+        <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-gray-100 shrink-0">
+            <img src="{% static 'images/innactifs.png' %}" class="w-6 h-6 object-contain" alt="Appareils inactifs">
+        </div>
+        <div class="flex-1 flex flex-col justify-between">
+            <p class="text-sm text-gray-500">Appareils inactifs</p>
+            <p class="text-2xl font-semibold text-gray-800">{{ equipement_inactif }}</p>
+            <a href="{% url 'appareils_inactifs' %}" class="text-sm text-gray-500 hover:text-gray-700 hover:underline">Voir</a>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-3 p-4 rounded-xl bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
+        <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-red-100 shrink-0">
+            <img src="{% static 'images/alertes.png' %}" class="w-6 h-6 object-contain" alt="Alertes">
+        </div>
+        <div class="flex-1 flex flex-col justify-between">
+            <p class="text-sm text-gray-500">Alertes</p>
+            <p class="text-2xl font-semibold text-gray-800">{{ alerte }}</p>
+            <a href="{% url 'alerte' %}" class="text-sm text-red-500 hover:text-red-600 hover:underline">Voir</a>
+        </div>
+    </div>
+</div>
+
+<!-- creation des graphiques -->
+<div class="flex flex-col md:flex-row flex-wrap gap-4 m-3 items-stretch">
+
+    <!-- Disponibilité du réseau -->
+    <div class="w-full md:w-[calc(50%-0.5rem)] bg-white hover:shadow-md rounded-xl p-5 shadow-sm border border-gray-100 flex flex-col">
+
+        <div class="flex items-start justify-between mb-4 min-h-[4rem]">
+            <div>
+                <p class="text-sm text-gray-500">
+                    Disponibilité du réseau
+                </p>
+
+                <p class="text-3xl font-bold text-gray-800 mt-1">
+                    {{ pourcentage_actif|floatformat:2 }} %
+                </p>
+            </div>
+
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 shrink-0">
+                <span class="text-green-600 text-lg">✓</span>
+            </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="relative w-full h-48">
+            <canvas id="disponibilite"></canvas>
+        </div>
+        <br>
+        <hr class="text-gray-200">
+        <p class="text-xs text-gray-400 mt-3">
+            Équipements actifs : {{ equipement_actif }} / {{ nbr_appareils }}
+        </p>
+
+    </div>
+
+
+    <!-- Indisponibilité du réseau -->
+    <div class="w-full md:w-[calc(50%-0.5rem)] bg-white hover:shadow-md  rounded-xl p-5 shadow-sm border border-gray-100 flex flex-col">
+
+        <div class="flex items-start justify-between mb-4 min-h-[4rem]">
+            <div>
+                <p class="text-sm text-gray-500">
+                    Indisponibilité du réseau
+                </p>
+
+                <p class="text-3xl font-bold text-gray-800 mt-1">
+                    {{ pourcentage_inactif|floatformat:2 }} %
+                </p>
+            </div>
+            
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-red-100 shrink-0">
+                <span class="text-red-600 text-lg">!</span>
+            </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="relative w-full h-48">
+            <canvas id="indisponibilite"></canvas>
+        </div>
+        <br>
+        <hr class="text-gray-200">
+        <p class="text-xs text-gray-400 mt-3">
+            Équipements inactifs : {{ equipement_inactif }} / {{ nbr_appareils }}
+        </p>
+
+    </div>
+
+</div>
+
+{% if equipements %}
+<!-- liste des equipements -->
+<div class="mx-auto w-full max-w-4xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm mt-4">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-3 text-left font-semibold text-gray-600">Image</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-600">Nom</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-600">Type</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-600">localication</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-600">fabriquant</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-600">Adresse IP</th>
+          <th class="px-4 py-3 text-left font-semibold text-gray-600">Statut</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for e in equipements %}
+        <tr class="transition-colors hover:bg-gray-50">
+          <td class="px-4 py-3">
+            <img src="{{ e.image }}"
+                 alt="{{ e.name }}"
+                 class="h-9 w-9 rounded-full border border-gray-200 object-cover" />
+          </td>
+          <td class="px-4 py-3 font-medium text-gray-900">{{ e.name }}</td>
+          <td class="px-4 py-3 text-gray-600">{{ e.type }}</td>
+          <td class="px-4 py-3 text-gray-600">{{ e.localisation }}</td>
+          <td class="px-4 py-3 text-gray-600">{{ e.fabriquant }}</td>
+          <td class="px-4 py-3 font-mono text-gray-600">{{ e.ip }}</td>
+          <td class="px-4 py-3">
+            {% if e.statut %}
+              <div class="w-7 h-7 animate-pulse rounded-full bg-green-300 flex items-center justify-center text-emerald-600 font-medium">
+                <p class="w-2 h-2 rounded-full bg-green-700"></p>
+              </div>
+            {% else %}
+              <div class="w-7 h-7  rounded-full bg-red-200 flex items-center justify-center text-red-600 font-medium">
+                <div >
+                    <p class="w-2 h-2 rounded-full bg-red-600"></p>
+                </div>
+              </div>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <!-- Pagination -->
+  {% if equipements.has_other_pages %}
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 w-full px-5 py-4 border-t border-gray-100 bg-gray-50/50">
+
+    <p class="text-xs text-gray-500">
+      Affichage de la page <span class="font-semibold text-gray-700">{{ equipements.number }}</span>
+      sur <span class="font-semibold text-gray-700">{{ equipements.paginator.num_pages }}</span>
+      &middot; <span class="font-semibold text-gray-700">{{ equipements.paginator.count }}</span> équipement{{ equipements.paginator.count|pluralize }}
+    </p>
+
+    <nav class="flex items-center gap-1.5">
+
+      <!-- Précédent -->
+      {% if equipements.has_previous %}
+        <a href="?page={{ equipements.previous_page_number }}"
+           class="group flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-all duration-200 shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      {% else %}
+        <span class="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+          </svg>
+        </span>
+      {% endif %}
+
+      <!-- Numéros de page -->
+      {% for num in equipements.paginator.page_range %}
+        {% if num == equipements.number %}
+          <span class="flex items-center justify-center w-9 h-9 rounded-lg bg-blue-500 text-white text-sm font-semibold shadow-sm shadow-blue-200">
+            {{ num }}
+          </span>
+        {% elif num > equipements.number|add:'-3' and num < equipements.number|add:'3' %}
+          <a href="?page={{ num }}"
+             class="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 bg-white text-sm text-gray-600 font-medium hover:bg-gray-100 hover:border-gray-300 transition-all duration-200">
+            {{ num }}
+          </a>
+        {% elif num == 1 or num == equipements.paginator.num_pages %}
+          <a href="?page={{ num }}"
+             class="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 bg-white text-sm text-gray-600 font-medium hover:bg-gray-100 hover:border-gray-300 transition-all duration-200">
+            {{ num }}
+          </a>
+        {% elif num == equipements.number|add:'-3' or num == equipements.number|add:'3' %}
+          <span class="flex items-center justify-center w-9 h-9 text-gray-300 text-sm select-none">&hellip;</span>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Suivant -->
+      {% if equipements.has_next %}
+        <a href="?page={{ equipements.next_page_number }}"
+           class="group flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-blue-500 hover:border-blue-500 hover:text-white transition-all duration-200 shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      {% else %}
+        <span class="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+          </svg>
+        </span>
+      {% endif %}
+
+    </nav>
+  </div>
+  {% endif %}
+
+</div>
+{% endif %}
+
+<!-- donnée transferer au js  -->
+{{ pourcentage_actif|json_script:"pourcentage_actif" }}
+{{ pourcentage_inactif|json_script:"pourcentage_inactif" }}
+
+<script>
+    const p_actif = JSON.parse(document.getElementById("pourcentage_actif").textContent);
+    const p_inactif = JSON.parse(document.getElementById("pourcentage_inactif").textContent);
+
+    const disponibilite = document.getElementById("disponibilite");
+    const indisponibilite = document.getElementById("indisponibilite");
+
+    new Chart(disponibilite, {
+        type: 'doughnut',
+        data: {
+            labels: ['Actifs', 'Inactifs'],
+            datasets: [{
+                data: [p_actif, 100 - p_actif],
+                backgroundColor: ['#22c55e', '#e5e7eb'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+            }
+        }
+    });
+
+    new Chart(indisponibilite, {
+        type: 'doughnut',
+        data: {
+            labels: ['Inactifs', 'Actifs'],
+            datasets: [{
+                data: [p_inactif, 100 - p_inactif],
+                backgroundColor: ['#ef4444', '#e5e7eb'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+            }
+        }
+    });
+</script>
 
 {% endblock %}

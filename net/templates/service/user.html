@@ -1,7 +1,65 @@
 {% extends 'service/base.html' %}
+{% load static %}
 
 {% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
 
-<p>rapport</p>
+    <!-- En-tête profil -->
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <div class="flex items-center gap-5">
+            <div class="w-16 h-16 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-xl font-semibold shrink-0">
+                {{ request.user.username|first|upper }}
+            </div>
+            <div class="flex-1 min-w-0">
+                <h1 class="text-xl font-semibold text-gray-800">{{ request.user.username }}</h1>
+                <p class="text-sm text-gray-500">{{ request.user.email|default:"Aucun email renseigné" }}</p>
+                <p class="text-xs text-gray-400 mt-1">
+                    Membre depuis le {{ request.user.date_joined|date:"d/m/Y" }}
+                </p>
+            </div>
+           
+        </div>
+    </div>
 
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Équipements</p>
+            <p class="text-2xl font-semibold text-gray-800">{{ total }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Actifs</p>
+            <p class="text-2xl font-semibold text-green-600">{{ actifs }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Inactifs</p>
+            <p class="text-2xl font-semibold text-gray-500">{{ inactifs }}</p>
+        </div>
+    </div>
+
+    <!-- Derniers équipements ajoutés -->
+    <div class="bg-white rounded-xl shadow overflow-hidden mb-6">
+        <div class="px-4 py-3 border-b border-gray-100">
+            <h2 class="text-sm font-medium text-gray-600">Derniers équipements ajoutés</h2>
+        </div>
+        {% if derniers_equipements %}
+        <ul class="divide-y divide-gray-100">
+            {% for e in derniers_equipements %}
+            <li class="px-4 py-3 flex items-center justify-between text-sm">
+                <a href="{% url 'detail_equipement' e.id %}" class="font-medium text-gray-800 hover:text-blue-600 hover:underline">
+                    {{ e.name }}
+                </a>
+                <span class="text-gray-400 text-xs">{{ e.created_at|date:"d/m/Y" }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="px-4 py-6 text-center text-gray-400">Aucun équipement enregistré pour l'instant.</p>
+        {% endif %}
+    </div>
+
+    <!-- Sécurité du compte -->
+   
+
+</div>
 {% endblock %}

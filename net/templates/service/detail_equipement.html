@@ -1,0 +1,113 @@
+{% extends 'service/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+
+    <!-- Fil d'ariane -->
+    <a href="{% url 'incident' %}" class="text-sm text-gray-400 hover:text-gray-600 hover:underline mb-4 inline-block">
+        &larr; Retour à la liste
+    </a>
+
+    <!-- En-tête -->
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <div class="flex items-start gap-5">
+            {% if e.image %}
+                <img src="{{ e.image }}" alt="{{ e.name }}" class="w-24 h-24 object-cover rounded-lg border border-gray-200">
+            {% else %}
+                <div class="w-24 h-24 rounded-lg bg-gray-100 flex items-center justify-center text-gray-300 text-xs shrink-0">—</div>
+            {% endif %}
+
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-3 mb-2">
+                    <h1 class="text-xl font-semibold text-gray-800">{{ e.name }}</h1>
+                    {% if e.statut %}
+                        <span class="inline-flex items-center gap-1 text-xs text-green-700 bg-green-100 px-3 py-1 rounded-full">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span> Actif
+                        </span>
+                    {% else %}
+                        <span class="inline-flex items-center gap-1 text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                            <span class="w-2 h-2 rounded-full bg-gray-400"></span> Inactif
+                        </span>
+                    {% endif %}
+                </div>
+                <p class="text-sm text-gray-500 mb-1">{{ e.type }} · {{ e.fabriquant }} · {{ e.modele }}</p>
+                <p class="text-sm text-gray-400">{{ e.localisation }}</p>
+
+                <div class="flex gap-3 mt-4 text-sm">
+                    <a href="#" class="text-blue-500 hover:text-blue-700 hover:underline">Modifier</a>
+                    <form action="{% url 'delete' e.id %}" method="post" class="inline"
+                          onsubmit="return confirm('Supprimer {{ e.name }} ?');">
+                        {% csrf_token %}
+                        <button type="submit" class="text-red-500 hover:text-red-700 hover:underline bg-transparent border-0 p-0 cursor-pointer">
+                            Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Métriques temps réel -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">CPU</p>
+            <p class="text-xl font-semibold {% if e.cpu >= 85 %}text-red-600{% elif e.cpu >= 60 %}text-yellow-600{% else %}text-gray-800{% endif %}">
+                {{ e.cpu }}%
+            </p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Mémoire</p>
+            <p class="text-xl font-semibold {% if e.memoire >= 85 %}text-red-600{% elif e.memoire >= 60 %}text-yellow-600{% else %}text-gray-800{% endif %}">
+                {{ e.memoire }}%
+            </p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Température</p>
+            <p class="text-xl font-semibold {% if e.temperature >= 70 %}text-red-600{% elif e.temperature >= 50 %}text-yellow-600{% else %}text-gray-800{% endif %}">
+                {{ e.temperature }}°C
+            </p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Latence</p>
+            <p class="text-xl font-semibold {% if e.latence >= 100 %}text-red-600{% elif e.latence >= 50 %}text-yellow-600{% else %}text-gray-800{% endif %}">
+                {{ e.latence }} ms
+            </p>
+        </div>
+    </div>
+
+    <!-- Informations réseau -->
+    <div class="bg-white rounded-xl shadow overflow-hidden mb-6">
+        <div class="px-4 py-3 border-b border-gray-100">
+            <h2 class="text-sm font-medium text-gray-600">Informations réseau</h2>
+        </div>
+        <dl class="divide-y divide-gray-100 text-sm">
+            <div class="flex justify-between px-4 py-3">
+                <dt class="text-gray-500">Adresse IP</dt>
+                <dd class="font-mono text-gray-800">{{ e.ip }}</dd>
+            </div>
+            <div class="flex justify-between px-4 py-3">
+                <dt class="text-gray-500">SNMP</dt>
+                <dd class="text-gray-800">{{ e.snmp|default:"—" }}</dd>
+            </div>
+            <div class="flex justify-between px-4 py-3">
+                <dt class="text-gray-500">Port SNMP</dt>
+                <dd class="text-gray-800">{{ e.snmp_port }}</dd>
+            </div>
+            <div class="flex justify-between px-4 py-3">
+                <dt class="text-gray-500">Version SNMP</dt>
+                <dd class="text-gray-800">{{ e.snmp_version|default:"—" }}</dd>
+            </div>
+            <div class="flex justify-between px-4 py-3">
+                <dt class="text-gray-500">Uptime</dt>
+                <dd class="text-gray-800">{{ e.uptime }}</dd>
+            </div>
+            <div class="flex justify-between px-4 py-3">
+                <dt class="text-gray-500">Ajouté le</dt>
+                <dd class="text-gray-800">{{ e.created_at|date:"d/m/Y H:i" }}</dd>
+            </div>
+        </dl>
+    </div>
+
+</div>
+{% endblock %}

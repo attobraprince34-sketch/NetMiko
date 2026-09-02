@@ -27,6 +27,6 @@ class EquipementAdmin(admin.ModelAdmin):
 
     ordering = ('-created_at',)
 
-admin.site.site_header = "Administration - NetMonitor"
+admin.site.site_header = "NetMonitor Admin"
 admin.site.site_title = 'NetMonitor'
 admin.site.index_title = "tableau de bord"

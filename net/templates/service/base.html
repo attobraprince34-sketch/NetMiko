@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}NetMonitor{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
+
 </head>
 
 <body class="bg-orange-50 min-h-screen w-full bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:16px_16px] font-sans">
@@ -127,7 +128,7 @@
                 </a>
 
                 <!-- DEVICES -->
-                <a href="{{ device_url }}"
+                <a href="{% url 'ajouter_equipement' %}"
                    class="group flex items-center gap-3 px-3 py-3 rounded-xl font-semibold transition
                           {% if request.path == device_url %} bg-green-50 text-green-600
                           {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
@@ -224,19 +225,6 @@
                         <span class="truncate">Utilisateurs</span>
                     </a>
 
-                    <!-- ADMIN -->
-                    <a href="{{ admin_url }}"
-                       class="group flex items-center gap-3 px-3 py-3 rounded-xl font-semibold transition
-                              {% if request.path == admin_url %} bg-green-50 text-green-600
-                              {% else %} text-slate-600 hover:bg-slate-50 hover:text-green-600 {% endif %}">
-
-                        <div class="w-9 h-9 flex items-center justify-center rounded-lg shrink-0 transition
-                                    {% if request.path == admin_url %} bg-green-500 shadow-sm
-                                    {% else %} bg-slate-100 group-hover:bg-green-50 {% endif %}">
-                            <img src="{% static 'images/admin.png' %}" class="w-5 h-5 object-contain" alt="">
-                        </div>
-                        <span class="truncate">Administration</span>
-                    </a>
 
                 </div>
 
@@ -272,7 +260,7 @@
     <!-- CONTENU PRINCIPAL                                         -->
     <!-- ========================================================= -->
 
-    <main class="min-h-screen lg:ml-72 pt-16 lg:pt-0 transition-all duration-300">
+    <main class="min-h-screen p-2 mt-5 lg:ml-72 pt-16 lg:pt-0 transition-all duration-300">
         {% block content %}
         {% endblock %}
     </main>

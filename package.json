@@ -21,6 +21,7 @@
   "homepage": "https://github.com/attobraprince34-sketch/NetMiko#readme",
   "dependencies": {
     "@tailwindcss/cli": "^4.3.3",
+    "chart.js": "^4.5.1",
     "tailwindcss": "^4.3.3"
   }
 }

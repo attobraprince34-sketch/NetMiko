@@ -1,0 +1,113 @@
+{% extends 'service/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- En-tête + alerte -->
+    <div class="mb-6">
+        <div class="flex items-center gap-2 mb-4">
+            <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span>
+            <h1 class="text-xl font-semibold text-gray-800">Appareils inactifs</h1>
+        </div>
+
+        <div class="bg-red-100 border border-red-100 text-red-800 text-sm rounded-lg px-4 py-3 mb-4">
+            Ces appareils sont actuellement signalés comme inactifs. Vérifiez leur connexion ou mettez à jour leur statut si nécessaire.
+        </div>
+
+        <form action="" method="get" class="flex w-full sm:w-80" role="search">
+            <input
+                id="search-input"
+                type="text"
+                name="q"
+                value="{{ request.GET.q }}"
+                placeholder="Rechercher un appareil..."
+                class="w-full border border-gray-300 bg-white text-gray-700 placeholder-gray-400 rounded-l-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+            >
+            <button
+                type="submit"
+                class="bg-gray-500 transition-colors text-white hover:bg-gray-700 font-medium px-4 py-2 rounded-r-lg"
+            >
+                Rechercher
+            </button>
+        </form>
+    </div>
+
+    <!-- Liste des appareils inactifs (en cartes) -->
+    <main id="cartes-appareils-inactifs">
+        {% if appareils %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {% for e in appareils %}
+            <div class="bg-white rounded-xl shadow border border-gray-100 p-4 flex gap-4 items-start opacity-90 hover:opacity-100 transition-opacity">
+                {% if e.image %}
+                    <img src="{{ e.image }}" alt="{{ e.name }}" class="w-16 h-16 object-cover rounded-lg border border-gray-200 grayscale">
+                {% else %}
+                    <div class="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center text-gray-300 text-xs shrink-0">—</div>
+                {% endif %}
+
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between gap-2 mb-1">
+                        <h3 class="font-medium text-gray-800 truncate">{{ e.name }}</h3>
+                        <span class="inline-flex items-center gap-1 text-xs text-gray-400 shrink-0">
+                            <span class="w-2 h-2 rounded-full bg-gray-300"></span> Inactif
+                        </span>
+                    </div>
+
+                    <p class="text-xs text-gray-500 font-mono mb-1">{{ e.ip }}</p>
+                    <p class="text-xs text-gray-500 mb-1">{{ e.localisation }}</p>
+                    <p class="text-xs text-gray-400">{{ e.type }} · {{ e.modele }}</p>
+
+                    <div class="flex items-center gap-3 mt-3 text-xs">
+                        <a href="{% url 'modifier_equipement' e.id %}" class="text-blue-500 hover:text-blue-700 hover:underline">Modifier</a>
+                        <form action="{% url 'delete' e.id %}" method="post" class="inline"
+                              onsubmit="return confirm('Supprimer {{ e.name }} ?');">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:text-red-700 hover:underline bg-transparent border-0 p-0 cursor-pointer text-xs">
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="flex items-center justify-between px-2 py-3 text-sm">
+            <span class="text-gray-500">
+                Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+                ({{ page_obj.paginator.count }} appareil{{ page_obj.paginator.count|pluralize }} inactif{{ page_obj.paginator.count|pluralize }})
+            </span>
+
+            <div class="flex gap-2">
+                {% if page_obj.has_previous %}
+                    <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}"
+                       class="px-3 py-1 rounded-lg border border-gray-200 hover:bg-gray-50">Précédent</a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <span class="px-3 py-1 rounded-lg bg-gray-500 text-white">{{ num }}</span>
+                    {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                        <a href="?q={{ request.GET.q }}&page={{ num }}"
+                           class="px-3 py-1 rounded-lg border border-gray-200 hover:bg-gray-50">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}"
+                       class="px-3 py-1 rounded-lg border border-gray-200 hover:bg-gray-50">Suivant</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="bg-white rounded-xl shadow p-10 text-center text-gray-400">
+            Aucun appareil inactif — tout fonctionne normalement.
+        </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

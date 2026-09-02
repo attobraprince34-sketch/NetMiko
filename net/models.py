@@ -14,7 +14,7 @@ class Equipements(models.Model):
     )
     name = models.CharField(max_length=300)
     ip = models.CharField(max_length=15, unique=True, blank=False)
-    image = models.CharField(max_length=1000)
+    image = models.CharField(max_length=1000, blank=True)
     type = models.CharField(max_length=300)
     fabriquant = models.CharField(max_length=300)
     modele = models.CharField(max_length=300)

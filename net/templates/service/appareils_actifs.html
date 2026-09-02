@@ -1,0 +1,125 @@
+{% extends 'service/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- En-tête + recherche -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 class="text-xl font-semibold text-gray-800">Appareils actifs</h1>
+
+        <form action="" method="get" class="flex w-full sm:w-80" role="search">
+            <input
+                id="search-input"
+                type="text"
+                name="q"
+                value="{{ request.GET.q }}"
+                placeholder="Rechercher un appareil..."
+                class="w-full border border-gray-300 bg-white text-gray-700 placeholder-gray-400 rounded-l-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            >
+            <button
+                type="submit"
+                class="bg-green-400 transition-colors text-white hover:bg-green-700 font-medium px-4 py-2 rounded-r-lg"
+            >
+                Rechercher
+            </button>
+        </form>
+    </div>
+
+    <!-- Liste des appareils actifs -->
+    <main id="tableau-appareils-actifs">
+        {% if appareils %}
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-gray-50 text-gray-500 uppercase text-xs tracking-wide">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Image</th>
+                            <th scope="col" class="px-4 py-3">Nom</th>
+                            <th scope="col" class="px-4 py-3">Adresse IP</th>
+                            <th scope="col" class="px-4 py-3">Localisation</th>
+                            <th scope="col" class="px-4 py-3">Type</th>
+                            <th scope="col" class="px-4 py-3">Modèle</th>
+                            <th scope="col" class="px-4 py-3">Statut</th>
+                            <th scope="col" class="px-4 py-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for e in appareils %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-3">
+                                {% if e.image %}
+                                    <img src="{{ e.image }}" alt="{{ e.name }}" class="w-14 h-10 object-cover rounded-md border border-gray-200">
+                                {% else %}
+                                    <div class="w-14 h-10 rounded-md bg-gray-100 flex items-center justify-center text-gray-300 text-xs">—</div>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3 font-medium text-gray-800">{{ e.name }}</td>
+                            <td class="px-4 py-3">
+                                <span class="inline-block bg-green-100 text-green-700 font-mono text-xs px-2 py-1 rounded">{{ e.ip }}</span>
+                            </td>
+                            <td class="px-4 py-3 text-gray-600">{{ e.localisation }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ e.type }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ e.modele }}</td>
+                            <td class="px-4 py-3">
+                                <span class="inline-flex items-center gap-1 text-xs text-green-700">
+                                    <span class="w-2 h-2 rounded-full bg-green-500"></span> Actif
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex justify-end items-center gap-3 text-sm">
+                                    <a href="{% url 'modifier_equipement' e.id %}" class="text-blue-500 hover:text-blue-700 hover:underline">Modifier</a>
+                                    <form action="{% url 'delete' e.id %}" method="post" class="inline"
+                                          onsubmit="return confirm('Supprimer {{ e.name }} ?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="text-red-500 hover:text-red-700 hover:underline bg-transparent border-0 p-0 cursor-pointer">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="flex items-center justify-between px-4 py-3 border-t border-gray-100 text-sm">
+                <span class="text-gray-500">
+                    Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+                    ({{ page_obj.paginator.count }} appareil{{ page_obj.paginator.count|pluralize }} actif{{ page_obj.paginator.count|pluralize }})
+                </span>
+
+                <div class="flex gap-2">
+                    {% if page_obj.has_previous %}
+                        <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}"
+                           class="px-3 py-1 rounded-lg border border-gray-200 hover:bg-gray-50">Précédent</a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if num == page_obj.number %}
+                            <span class="px-3 py-1 rounded-lg bg-green-500 text-white">{{ num }}</span>
+                        {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                            <a href="?q={{ request.GET.q }}&page={{ num }}"
+                               class="px-3 py-1 rounded-lg border border-gray-200 hover:bg-gray-50">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}"
+                           class="px-3 py-1 rounded-lg border border-gray-200 hover:bg-gray-50">Suivant</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="bg-white rounded-xl shadow p-10 text-center text-gray-400">
+            Aucun appareil actif trouvé.
+        </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

@@ -1,5 +1,83 @@
 {% extends 'service/base.html' %}
+{% load static %}
 
 {% block content %}
-<p>interface</p>
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <h1 class="text-xl font-semibold text-gray-800 mb-6">Interfaces réseau</h1>
+
+    <!-- Résumé -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Total</p>
+            <p class="text-2xl font-semibold text-gray-800">{{ total }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Up</p>
+            <p class="text-2xl font-semibold text-green-600">{{ up }}</p>
+        </div>
+        <div class="bg-white rounded-xl shadow p-4">
+            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Down</p>
+            <p class="text-2xl font-semibold text-gray-500">{{ down }}</p>
+        </div>
+    </div>
+
+    <!-- Tableau des interfaces réseau -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        {% if equipements %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 text-gray-500 uppercase text-xs tracking-wide">
+                    <tr>
+                        <th class="px-4 py-3">Équipement</th>
+                        <th class="px-4 py-3">Statut</th>
+                        <th class="px-4 py-3">Adresse IP</th>
+                        <th class="px-4 py-3">SNMP</th>
+                        <th class="px-4 py-3">Port</th>
+                        <th class="px-4 py-3">Version</th>
+                        <th class="px-4 py-3">Latence</th>
+                        <th class="px-4 py-3">Uptime</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for e in equipements %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3">
+                            <a href="{% url 'detail_equipement' e.id %}" class="font-medium text-gray-800 hover:text-blue-600 hover:underline">
+                                {{ e.name }}
+                            </a>
+                            <p class="text-xs text-gray-400">{{ e.localisation }}</p>
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if e.statut %}
+                                <span class="inline-flex items-center gap-1 text-xs text-green-700">
+                                    <span class="w-2 h-2 rounded-full bg-green-500"></span> Up
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1 text-xs text-gray-400">
+                                    <span class="w-2 h-2 rounded-full bg-gray-300"></span> Down
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 font-mono text-xs text-gray-600">{{ e.ip }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ e.snmp|default:"—" }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ e.snmp_port }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ e.snmp_version|default:"—" }}</td>
+                        <td class="px-4 py-3 {% if e.latence >= 100 %}text-red-600{% elif e.latence >= 50 %}text-yellow-600{% else %}text-gray-600{% endif %}">
+                            {{ e.latence }} ms
+                        </td>
+                        <td class="px-4 py-3 text-gray-500 text-xs">{{ e.uptime }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-10 text-center text-gray-400">
+            Aucun équipement enregistré.
+        </div>
+        {% endif %}
+    </div>
+
+</div>
 {% endblock %}
