@@ -22,11 +22,13 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = False
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+ALLOWED_HOSTS=.onrender.com
 
+DATABASES_URL=postgresql://netmonitor_db_ttrj_user:8AbPIspyZZnP98OI3FqAf7wYY3xhs68R@dpg-dack9q8ae00c73fk1g80-a.oregon-postgres.render.com/netmonitor_db_ttrj 
 
+PYTHON_VERSION=3.13
 # Application definition
 
 INSTALLED_APPS = [
